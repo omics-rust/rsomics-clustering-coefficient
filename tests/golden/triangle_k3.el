@@ -1,0 +1,4 @@
+# triangle K3
+a b
+b c
+a c
