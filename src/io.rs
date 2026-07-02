@@ -24,7 +24,9 @@ impl Graph {
 /// - Blank lines are ignored.
 /// - Each data line must have at least two whitespace-separated tokens; the
 ///   first two are the endpoints.
-/// - Self-loops are silently dropped (networkx ignores them for clustering).
+/// - Self-loops register the node but add no edge: networkx excludes a
+///   self-loop from both triangle counting and the clustering degree
+///   denominator, yet still keeps the node (degree 0, clustering 0).
 /// - Duplicate edges collapse to a simple graph.
 ///
 /// Nodes are assigned integer IDs in the order they first appear.
@@ -58,12 +60,11 @@ pub fn read_edgelist(path: Option<&Path>) -> Result<Graph> {
             RsomicsError::InvalidInput(format!("line {lineno}: expected two node labels, got one"))
         })?;
 
-        if u_str == v_str {
-            continue; // self-loop: ignored
-        }
-
         let u = intern(&mut labels, &mut index, u_str);
         let v = intern(&mut labels, &mut index, v_str);
+        if u == v {
+            continue; // self-loop: node stays registered, no edge added
+        }
         raw_edges.push((u, v));
     }
 

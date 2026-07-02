@@ -31,8 +31,9 @@ pub enum Metric {
 ///
 /// Reads an edge list (one `u v` pair per line, whitespace-separated) from a
 /// file argument or stdin (`-`). Comment lines starting with `#` and blank
-/// lines are ignored. Self-loops are silently dropped. Duplicate edges collapse
-/// to a simple graph.
+/// lines are ignored. Self-loops register the node but add no edge (matching
+/// networkx: degree 0, clustering 0). Duplicate edges collapse to a simple
+/// graph.
 ///
 /// Output order matches networkx node-insertion order (the order each node
 /// label first appears in the edge list).

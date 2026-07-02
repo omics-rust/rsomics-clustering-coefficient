@@ -157,7 +157,7 @@ fn value_exact_all_goldens() {
     }
 
     assert!(
-        checked >= 28,
-        "expected at least 28 golden checks, got {checked}"
+        checked >= 32,
+        "expected at least 32 golden checks, got {checked}"
     );
 }
