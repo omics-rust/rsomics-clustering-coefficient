@@ -1,6 +1,6 @@
 [package]
 name = "rsomics-clustering-coefficient"
-version = "0.1.1"
+version = "0.1.2"
 description = "Triangle-based clustering metrics for undirected graphs — value-exact networkx equivalent (triangles, local/average clustering, transitivity)"
 edition = "2024"
 rust-version = "1.91"

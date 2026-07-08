@@ -20,8 +20,9 @@ impl Graph {
 }
 
 /// Parse an undirected edge list. Rules matching networkx `read_edgelist`:
-/// - Lines starting with `#` are comments (ignored).
-/// - Blank lines are ignored.
+/// - Text from the first `#` onward is a comment (stripped before tokenising),
+///   so a `#` anywhere on a line ends the data, not just a leading one.
+/// - Blank lines, and lines that are entirely comment, are ignored.
 /// - Each data line must have at least two whitespace-separated tokens; the
 ///   first two are the endpoints.
 /// - Self-loops register the node but add no edge: networkx excludes a
@@ -50,8 +51,11 @@ pub fn read_edgelist(path: Option<&Path>) -> Result<Graph> {
     for (lineno, line) in reader.lines().enumerate() {
         let lineno = lineno + 1;
         let line = line.map_err(RsomicsError::Io)?;
-        let t = line.trim();
-        if t.is_empty() || t.starts_with('#') {
+        // networkx parse_edgelist strips a `#` comment anywhere in the line
+        // before tokenising: `1 2#note` is edge (1,2), and `0 #1` is a lone
+        // token, not an edge to a node named `#1`.
+        let t = line.split('#').next().unwrap_or("").trim();
+        if t.is_empty() {
             continue;
         }
         let mut tokens = t.split_ascii_whitespace();
